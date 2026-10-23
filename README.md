@@ -1,2 +1,8 @@
-# AbyssalChronicles
-Abyssal Chronicles: Boundless Depths / Хроніки Безодні: Безмежні Глибини
+# Хроніки Безодні: Безмежні Глибини
+
+Браузерна гра. Публікація через GitHub Pages.
+
+## Як опублікувати
+1. Створіть репозиторій на GitHub і завантажте всі файли з цієї папки у корінь.
+2. Settings → Pages → Source: *Deploy from a branch* → Branch: `main`, папка `/ (root)` → Save.
+3. Через 1–2 хвилини гра буде доступна на `https://<ваш-логін>.github.io/<назва-репозиторію>/`.
