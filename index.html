@@ -43,12 +43,12 @@ canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;backg
 #tlab{position:fixed;right:max(18px,env(safe-area-inset-right));bottom:calc(max(14px,env(safe-area-inset-bottom)) + 174px);padding:4px 10px;border-radius:8px;background:rgba(0,0,0,.65);color:#ffd86b;font-size:12px;font-weight:700;pointer-events:none;z-index:5}#tlab:empty{display:none}
 .nm{width:100%;box-sizing:border-box;padding:11px;font-size:16px;border-radius:8px;border:1px solid #3a4160;background:#0f1320;color:#fff;margin:6px 0 10px;-webkit-user-select:text;user-select:text}
 .go{width:100%;padding:12px;border:0;border-radius:10px;background:#3b6fd8;color:#fff;font-size:16px;font-weight:700}
-#hb{flex-direction:row;top:100px}
+#hb{display:contents}#hb button{position:fixed}#pot{display:none}#bag{left:max(10px,env(safe-area-inset-left));top:140px}#snd{right:max(10px,env(safe-area-inset-right));top:12px}#fs{left:auto;right:max(64px,calc(env(safe-area-inset-right) + 54px));top:14px;transform:none}
 .rng{width:100%;margin:8px 0 12px}.set{margin-bottom:6px;font-size:14px}
 #joy{width:200px;height:72px;border-radius:36px}#joy i{width:56px;height:56px;margin:-28px 0 0 -28px}
 input{-webkit-user-select:text;user-select:text}
 @media (pointer:fine){#talk{bottom:30px}#tlab{bottom:114px}}
-@media (pointer:fine){#pad{display:none}#talk{display:none!important}#hb{top:10px;left:auto;right:10px}#fs{left:auto;right:196px;transform:none}#tlab{right:auto;left:50%;transform:translateX(-50%);bottom:96px}}
+@media (pointer:fine){#pad{display:none}#talk{display:none!important}#bag{left:auto;right:70px;top:10px}#snd{top:10px}#fs{right:130px;top:10px}#tlab{right:auto;left:50%;transform:translateX(-50%);bottom:96px}}
 #hot{position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:8px;z-index:4}
 #hot button{position:relative;width:54px;height:54px;border-radius:10px;border:2px solid rgba(255,255,255,.4);background:rgba(0,0,0,.55);padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 #hot button:active{background:rgba(255,255,255,.25)}
@@ -56,7 +56,7 @@ input{-webkit-user-select:text;user-select:text}
 #hot canvas{position:static;inset:auto;width:36px;height:36px;object-fit:fill;background:transparent;margin:3px auto 0;display:block}
 #hot i{position:absolute;left:4px;top:1px;font:bold 11px system-ui;color:#ffd86b;font-style:normal}
 #hot b{position:absolute;right:4px;bottom:2px;font:bold 12px system-ui;color:#fff}
-@media (pointer:coarse){#hot{bottom:auto;top:8px;left:auto;right:max(10px,env(safe-area-inset-right));transform:none;flex-direction:row}#hot button{width:44px;height:44px}#hot canvas{width:28px;height:28px}#hot i{display:none}}
+@media (pointer:coarse){#hot{gap:6px}#hot button{width:50px;height:50px}#hot canvas{width:32px;height:32px}}
 .kt{display:flex;justify-content:space-between;gap:10px;padding:5px 8px;background:#20263a;border-radius:6px;margin-bottom:4px;font-size:13px}.kt b{color:#ffd86b;white-space:nowrap}
 </style></head><body>
 <canvas id="c"></canvas><button id="fs">⛶</button>
@@ -86,7 +86,7 @@ let plats=[[-900,GY,2400,80],[1640,GY,960,80],[2780,GY,1120,80],[4040,GY,1200,80
  .map(a=>({x:a[0],y:a[1],w:a[2],h:a[3],k:a[4]}));
 let camps=[{x:90,y:GY},{x:1780,y:GY},{x:4140,y:GY}];       // табори відродження гравця
 let ecamps=[ // табори ворогів
- {x:1060,y:GY,type:'slime',r:50},{x:1240,y:GY,type:'goblin',r:90},{x:1430,y:GY,type:'slime',r:40},
+ {x:1210,y:GY,type:'slime',r:30},{x:1240,y:GY,type:'goblin',r:90},{x:1430,y:GY,type:'slime',r:40},
  {x:2280,y:300,type:'goblin',r:60},{x:2450,y:GY,type:'slime',r:70},{x:3450,y:GY,type:'slime',r:110},{x:3700,y:GY,type:'goblin',r:130}
 ].map(c=>({...c,e:null,t:0}));
 const RESP=8;
@@ -229,13 +229,13 @@ function hud(){
  g.fillStyle='#400';g.fillRect(18,18,190,12);g.fillStyle='#e33';g.fillRect(18,18,190*p.hp/p.max,12);
  g.fillStyle='#330';g.fillRect(18,36,190,7);g.fillStyle='#fc4';g.fillRect(18,36,190*p.xp/(p.lvl*50),7);
  g.fillStyle='#fff';g.font='bold 12px system-ui';g.textAlign='left';g.fillText('Рів. '+p.lvl+'   HP '+Math.ceil(p.hp)+'/'+p.max+'   Урон '+dmgOf(),18,55);
- g.font='bold 12px system-ui';g.textAlign='left';g.fillStyle='#fc4';g.beginPath();g.arc(26,70,6,0,6.3);g.fill();g.fillStyle='#fff';g.fillText(p.gold+' золота',38,74);g.restore();g.restore();if(!run){g.font='11px system-ui';g.fillStyle='#ffd86b';if(PCM){g.textAlign='left';g.fillText(LOCN[lvl]||'',12,10+84*HS+14)}else{g.textAlign='right';g.fillText(LOCN[lvl]||'',W-12,38)}}
+ g.font='bold 12px system-ui';g.textAlign='left';g.fillStyle='#fc4';g.beginPath();g.arc(26,70,6,0,6.3);g.fill();g.fillStyle='#fff';g.fillText(p.gold+' золота',38,74);g.restore();g.restore();if(!run){g.font='11px system-ui';g.fillStyle='#ffd86b';if(PCM){g.textAlign='left';g.fillText(LOCN[lvl]||'',12,10+84*HS+14)}else{g.textAlign='center';const lt=LOCN[lvl]||'',tw=g.measureText(lt).width+24;g.fillStyle='rgba(0,0,0,.45)';g.beginPath();g.roundRect(W/2-tw/2,6,tw,22,11);g.fill();g.fillStyle='#ffd86b';g.fillText(lt,W/2,21)}}
  g.textAlign='center';
  if(p.dead){g.fillStyle='rgba(0,0,0,.55)';g.fillRect(0,0,W,VH);g.fillStyle='#fff';g.font='bold 30px system-ui';g.fillText('Ти загинув',W/2,VH/2-10);g.font='16px system-ui';g.fillText('Відродження в таборі через '+Math.ceil(p.deadT)+' с',W/2,VH/2+22)}
  if(msgT>0){g.fillStyle='#ffe27a';g.font='bold 28px system-ui';g.fillText(msgS,W/2,70)}}
 function draw(){
  g.setTransform(K,0,0,K,0,0);g.save();g.translate(0,-Math.round(camY));bg();g.translate(-Math.round(cam),0);
- drawPlats();drawVillage();drawLogging();drawMine();drawNodes();drawCamps();drawNPC();drawSmith();drawTools();drawTailor();drawCarp();drawMineIn();drawDoors();drawConts();drawPortal();drawLoot();enemies.forEach(drawE);drawAnimals();drawP();drawTag();
+ drawPlats();drawVillage();drawLogging();drawMine();drawNodes();drawCamps();drawNPC();drawSmith();drawTools();drawTailor();drawCarp();drawMineIn();drawDoors();drawConts();drawPortal();drawLoot();drawAlch();enemies.forEach(drawE);drawAnimals();drawP();drawTag();drawNames();drawQMarks();
  for(const q of parts){g.globalAlpha=Math.min(1,q.l*2);g.fillStyle=q.c;g.fillRect(q.x,q.y,3,3)}g.globalAlpha=1;
  g.textAlign='center';g.font='bold 14px system-ui';for(const q of texts){g.globalAlpha=Math.min(1,q.l*2);g.fillStyle=q.c;g.fillText(q.s,q.x,q.y)}g.globalAlpha=1;
  g.restore();hud();bossHud();if(fade>0){g.fillStyle='rgba(0,0,0,'+fade+')';g.fillRect(0,0,W,VH)}}
@@ -271,12 +271,13 @@ ITEMS.sickle1={n:'Серп',t:'tool',tool:'sickle',tier:1,buy:30,col:'#9aa3b2',d
 ITEMS.w4={n:'Кований меч',t:'w',dmg:13,len:34,tier:2,col:'#cfd6e6',sell:80,d:'+13 урону · виковано'};ITEMS.h3={n:'Кований шолом',t:'h',def:7,tier:2,col:'#b8c2d6',sell:70,d:'+7 захисту'};
 ITEMS.b4={n:'Кована броня',t:'b',def:11,tier:3,col:'#c4cde0',sell:130,d:'+11 захисту'};ITEMS.f3={n:'Кувані чоботи',t:'f',def:4,spd:30,tier:2,col:'#8e9ab0',sell:70,d:'+4 захисту, +30 швидкості'};
 ITEMS.meat={n:'Сире м’ясо',t:'mat',sell:6,col:'#d46a6a',d:'Для печені'};ITEMS.hide={n:'Шкура',t:'mat',sell:12,col:'#9a6a3a',d:'Для шкіряної броні'};ITEMS.pelt={n:'Хутро',t:'mat',sell:6,col:'#b89a72',d:'Заєче хутро'};ITEMS.tusk={n:'Ікло кабана',t:'mat',sell:18,col:'#f0e8d0',d:'Трофей'};ITEMS.antler={n:'Роги оленя',t:'mat',sell:25,col:'#c9a878',d:'Трофей'};
+ITEMS.soup={n:'Миска супу',t:'pot',heal:70,sell:14,col:'#e8b84a',d:'Лікує 70 HP'};ITEMS.hp3={n:'Еліксир життя',t:'pot',heal:200,sell:50,col:'#33ddaa',d:'Лікує 200 HP'};ITEMS.compote={n:'Яблучний компот',t:'pot',heal:35,sell:8,col:'#d9843a',d:'Лікує 35 HP'};
 ITEMS.roast={n:'Печеня',t:'pot',heal:45,sell:10,col:'#c97a3a',d:'Лікує 45 HP'};
 ITEMS.knife1={n:'Ніж шкуродера',t:'tool',tool:'knife',tier:1,buy:45,col:'#9aa3b2',d:'Шкуродер: знімати шкури'};ITEMS.knife2={n:'Залізний ніж',t:'tool',tool:'knife',tier:2,sell:70,col:'#e4ebf7',d:'Міцніший, більше здобичі'};
 ITEMS.plank={n:'Дошка',t:'mat',sell:6,col:'#c9a06a',d:'Оброблена деревина'};ITEMS.w5={n:'Дубина',t:'w',dmg:6,len:30,tier:1,col:'#a8794a',sell:25,d:'+6 урону · зроблено столяром'};ITEMS.h5={n:'Дерев’яний шолом',t:'h',def:2,tier:1,col:'#b88a52',sell:14,d:'+2 захисту'};ITEMS.b6={n:'Дерев’яна броня',t:'b',def:5,tier:1,col:'#b88a52',sell:30,d:'+5 захисту'};ITEMS.f5={n:'Дерев’яні черевики',t:'f',def:1,spd:25,tier:1,col:'#a8794a',sell:14,d:'+1 захисту, +25 швидкості'};ITEMS.h4={n:'Хутряний капюшон',t:'h',def:3,tier:1,col:'#b89a72',sell:20,d:'+3 захисту'};ITEMS.b5={n:'Хутряна куртка',t:'b',def:7,tier:2,col:'#b89a72',sell:48,d:'+7 захисту'};ITEMS.f4={n:'Хутряні чоботи',t:'f',def:2,spd:25,tier:1,col:'#b89a72',sell:20,d:'+2 захисту, +25 швидкості'};
 for(const k in ITEMS){const i=ITEMS[k];if(i.sell==null)i.sell=Math.floor((i.buy||4)/2);if(!i.tier)i.tier=0}
 const SLOT={w:'Зброя',h:'Шолом',b:'Броня',f:'Чоботи'},STOCK=['hp1','hp2','w1','w2','h1','h2','b1','b2','b3','f1','f2'];
-const slots=[null,null,null,null];const inv={hp1:1},equip={w:'w0',h:null,b:null,f:null},NPC={x:215,y:GY},SMITH={x:380,y:GY},TOOLS={x:530,y:GY},TAILOR={x:690,y:GY},CARP={x:850,y:GY},MINEX=1950;p.gold=40;
+const slots=[null,null,null,null];const inv={hp1:1},equip={w:'w0',h:null,b:null,f:null},NPC={x:215,y:GY},SMITH={x:380,y:GY},TOOLS={x:530,y:GY},TAILOR={x:690,y:GY},CARP={x:850,y:GY},ALCH={x:1040,y:GY},MINEX=1950;p.gold=40;
 let uiOpen=false,mode='inv',tab='buy',near=false,loot=[],lastPc=-1;
 const $=id=>document.getElementById(id),ui=$('ui'),pb=$('pb'),talk=$('talk'),pot=$('pot'),tlab=$('tlab');
 function eqc(s,d){return equip[s]?ITEMS[equip[s]].col:d}
@@ -289,7 +290,7 @@ function drawIcon(c,id,x,y,s){const it=id=='gold'?{t:'gold',col:'#ffcc44'}:ITEMS
  switch(it.t){
  case 'gold':c.beginPath();c.arc(0,0,5,0,6.3);c.fill();c.fillStyle='#b8860b';c.fillRect(-1,-3,2,6);break;
  case 'mat':if(id=='wood'){c.fillRect(-8,-4,16,9);c.fillStyle='#c9a06a';c.beginPath();c.ellipse(-8,0,3,4.5,0,0,6.3);c.fill()}else if(id=='plank'){c.fillRect(-9,-4,18,8);c.fillStyle='#a67c4a';c.fillRect(-9,0,18,1.5);c.fillStyle='#e0bd8a';c.fillRect(-9,-4,18,1.5)}else if(id=='ore'){c.beginPath();c.moveTo(-8,5);c.lineTo(-6,-4);c.lineTo(1,-8);c.lineTo(8,-2);c.lineTo(7,5);c.fill();c.fillStyle='#d8e0ff';c.fillRect(-1,-3,3,3)}else if(id=='bar'){c.beginPath();c.moveTo(-8,4);c.lineTo(-5,-3);c.lineTo(6,-3);c.lineTo(9,4);c.fill();c.fillStyle='rgba(255,255,255,.5)';c.fillRect(-4,-2,9,2)}else if(id=='meat'){c.beginPath();c.ellipse(0,0,8,5,.3,0,6.3);c.fill();c.fillStyle='#f5d0c8';c.fillRect(-1,-3,3,7)}else if(id=='hide'||id=='pelt'){c.fillRect(-7,-5,14,10);c.fillRect(-9,-3,4,4);c.fillRect(5,-3,4,4)}else if(id=='tusk'){c.beginPath();c.moveTo(-5,6);c.quadraticCurveTo(-7,-4,4,-7);c.lineTo(2,-3);c.quadraticCurveTo(-2,0,-1,6);c.fill()}else if(id=='antler'){c.fillRect(-1,-1,2,8);c.fillRect(-7,-7,2,8);c.fillRect(5,-7,2,8);c.fillRect(-7,-2,12,2)}else if(id=='herb'){c.beginPath();c.ellipse(-3,0,3,7,-.5,0,6.3);c.ellipse(4,-1,3,6,.5,0,6.3);c.fill()}else if(id=='wing'){c.beginPath();c.moveTo(-8,-4);c.quadraticCurveTo(0,-10,8,-4);c.lineTo(4,2);c.lineTo(0,-1);c.lineTo(-4,2);c.fill()}else if(id=='gel'){c.beginPath();c.ellipse(0,2,7,5,0,Math.PI,0);c.lineTo(7,6);c.lineTo(-7,6);c.fill()}else if(id=='fang'){c.beginPath();c.moveTo(-4,-6);c.lineTo(4,-6);c.lineTo(0,7);c.fill()}else{c.beginPath();c.moveTo(0,-8);c.lineTo(6,0);c.lineTo(0,8);c.lineTo(-6,0);c.fill()}break;
- case 'pot':if(id=='roast'){c.beginPath();c.ellipse(0,1,8,5,0,0,6.3);c.fill();c.fillStyle='#f0d8b0';c.fillRect(-2,-6,4,7)}else if(id=='apple'){c.beginPath();c.arc(0,2,6,0,6.3);c.fill();c.fillStyle='#44aa22';c.fillRect(-1,-7,2,4)}else{c.fillRect(-2,-8,4,4);c.beginPath();c.arc(0,2,6,0,6.3);c.fill();c.fillStyle='rgba(255,255,255,.5)';c.fillRect(-3,-1,2,4)}break;
+ case 'pot':if(id=='roast'){c.beginPath();c.ellipse(0,1,8,5,0,0,6.3);c.fill();c.fillStyle='#f0d8b0';c.fillRect(-2,-6,4,7)}else if(id=='apple'){c.beginPath();c.arc(0,2,6,0,6.3);c.fill();c.fillStyle='#44aa22';c.fillRect(-1,-7,2,4)}else if(id=='soup'){c.beginPath();c.ellipse(0,0,9,7,0,0,Math.PI);c.fill();c.fillStyle='#f6dc8a';c.beginPath();c.ellipse(0,0,9,3,0,0,6.3);c.fill();c.fillStyle='rgba(255,255,255,.6)';c.fillRect(-2,-8,2,5);c.fillRect(3,-9,2,6)}else{c.fillRect(-2,-8,4,4);c.beginPath();c.arc(0,2,6,0,6.3);c.fill();c.fillStyle='rgba(255,255,255,.5)';c.fillRect(-3,-1,2,4)}break;
  case 'w':c.rotate(-.8);c.fillRect(-1.5,-9,3,14);c.fillStyle='#6a4a1a';c.fillRect(-5,4,10,2.5);c.fillRect(-1.5,6,3,4);break;
  case 'h':c.beginPath();c.arc(0,1,7,Math.PI,0);c.fill();c.fillRect(-7,1,14,3);break;
  case 'b':c.fillRect(-6,-6,12,13);c.fillRect(-9,-7,5,5);c.fillRect(4,-7,5,5);break;
@@ -329,7 +330,7 @@ function drawNPC(){if(lvl!='world')return;const x=NPC.x,y=NPC.y,b=Math.sin(t*2)*
 function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.append(x);return e}
 function btn(txt,fn,cls){const b=el('button',cls||'',txt);b.onclick=fn;return b}
 function row(id,right){const r=el('div','row');r.append(ic(id));const m=el('div','mid');m.append(el('b',0,ITEMS[id].n),el('small',0,ITEMS[id].d));r.append(m);if(right)r.append(right);return r}
-function openUI(m){sfx('click');mode=m;uiOpen=true;pickTab();tlab.textContent='';for(const k in touch)touch[k]=0;for(const k in keys)keys[k]=0;ui.style.display='flex';render()}
+function openUI(m){sfx('click');mode=m;qtab='main';uiOpen=true;pickTab();tlab.textContent='';for(const k in touch)touch[k]=0;for(const k in keys)keys[k]=0;ui.style.display='flex';render()}
 function closeUI(){if(mode=='name'&&!pname)return;uiOpen=false;ui.style.display='none';saveGame()}
 function equipIt(id){sfx('equip');const s=ITEMS[id].t,old=equip[s];addInv(id,-1);if(old)addInv(old,1);equip[s]=id;render()}
 function unequip(s){const id=equip[s];if(!id)return;equip[s]=null;addInv(id,1);render()}
@@ -339,7 +340,7 @@ function slotOf(id){const i=slots.indexOf(id);return i}
 function cycleSlot(id){const c=slots.indexOf(id);if(c>=0)slots[c]=null;const t=(c+1)%5;if(t<4)slots[t]=id;render()}
 let hotKey='';const hotEl=document.getElementById('hot');
 function updHot(){const k=slots.map(id=>id+':'+(id?inv[id]|0:0)).join('|');if(k==hotKey)return;hotKey=k;hotEl.innerHTML='';slots.forEach((id,i)=>{const b=el('button',id&&inv[id]?'':'e');b.append(el('i',0,String(i+1)));if(id){b.append(ic(id));b.append(el('b',0,String(inv[id]|0)));b.title=ITEMS[id].n}b.onclick=()=>useSlot(i);b.addEventListener('contextmenu',e=>e.preventDefault());hotEl.append(b)})}
-function quick(){if(uiOpen||p.dead)return;const id=inv.hp1?'hp1':inv.hp2?'hp2':inv.roast?'roast':inv.apple?'apple':null;if(!id){txt(p.x,p.y-20,'Немає еліксирів','#f88');return}if(p.hp>=p.max){txt(p.x,p.y-20,'HP повне','#aaa');return}drink(id)}
+function quick(){if(uiOpen||p.dead)return;const id=inv.hp1?'hp1':inv.hp2?'hp2':inv.roast?'roast':inv.apple?'apple':inv.soup?'soup':inv.compote?'compote':inv.hp3?'hp3':null;if(!id){txt(p.x,p.y-20,'Немає еліксирів','#f88');return}if(p.hp>=p.max){txt(p.x,p.y-20,'HP повне','#aaa');return}drink(id)}
 function buy(id){const c=ITEMS[id].buy;if(p.gold<c){sfx('no');return}p.gold-=c;sfx('buy');addInv(id,1);render()}
 function sell(id){sfx('coin');p.gold+=ITEMS[id].sell;addInv(id,-1);render()}
 let btab='w';const BT=[['w','Зброя'],['a','Броня'],['p','Зілля'],['m','Ресурси'],['t','Знаряддя']];
@@ -352,21 +353,107 @@ function eqView(c){const wrap=el('div','two'),L=el('div','col'),R=el('div','col'
  for(const s of ['w','h','b','f']){const id=equip[s];let r;if(id){r=row(id,btn('Зняти',()=>unequip(s)));r.querySelector('b').textContent=SLOT[s]+': '+ITEMS[id].n}else{r=el('div','row empty');r.append(el('span',0,SLOT[s]+': порожньо'))}L.append(r)}
  L.append(el('small','st','Урон '+dmgOf()+' · Захист '+defOf()+' · Швидкість +'+spdOf()+(setN()?' · Комплект Кажан '+setN()+'/4 (2 шт: +15% урону, 4 шт: регенерація)':'')));
  R.append(el('h4',0,'Сумка'));bagTabs(R);const ids=bagIds();if(!ids.length)R.append(el('p','empty','У цій вкладці порожньо'));
- for(const id of ids){const it=ITEMS[id],r=row(id,it.t=='pot'?btn((id=='apple'||id=='roast')?'З’їсти':'Випити',()=>drink(id)):(it.t=='mat'||it.t=='tool')?null:btn('Одягнути',()=>equipIt(id)));r.querySelector('b').textContent+=' ×'+inv[id];if(usable(id)){const sb=btn('Слот: '+(slotOf(id)<0?'—':slotOf(id)+1),()=>cycleSlot(id));sb.style.background='#3b6fd8';r.append(sb)}if(it.t=='tool')r.querySelector('small').textContent=it.d+' · міцність '+durOf(id)+'/'+MAXD[it.tier];R.append(r)}
+ for(const id of ids){const it=ITEMS[id],r=row(id,it.t=='pot'?btn(['apple','roast','soup'].includes(id)?'З’їсти':'Випити',()=>drink(id)):(it.t=='mat'||it.t=='tool')?null:btn('Одягнути',()=>equipIt(id)));r.querySelector('b').textContent+=' ×'+inv[id];if(usable(id)){const sb=btn('Слот: '+(slotOf(id)<0?'—':slotOf(id)+1),()=>cycleSlot(id));sb.style.background='#3b6fd8';r.append(sb)}if(it.t=='tool')r.querySelector('small').textContent=it.d+' · міцність '+durOf(id)+'/'+MAXD[it.tier];R.append(r)}
  wrap.append(L,R);c.append(wrap)}
-function render(){$('px').style.display='';if(mode=='result'){renderResult();return}if(mode=='name'){renderName();return}if(mode=='settings'){renderSettings();return}if(mode=='craft'||mode=='tools'||mode=='tailor'||mode=='carp'){renderCraft();return}$('pg').textContent='Золото: '+p.gold;pb.innerHTML='';
+function render(){const n=curNpc();if(mode=='quest'||(n&&qtab=='quest')){renderQuestPanel(n);return}render0();if(n)pb.prepend(npcTabs(n))}
+function render0(){$('px').style.display='';if(mode=='result'){renderResult();return}if(mode=='name'){renderName();return}if(mode=='settings'){renderSettings();return}if(mode=='craft'||mode=='tools'||mode=='tailor'||mode=='carp'||mode=='alch'){renderCraft();return}$('pg').textContent='Золото: '+p.gold;pb.innerHTML='';
  if(mode=='shop'){$('pt').textContent='Торговець Грім';
   const tabs=el('div','tabs');[['buy','Купити'],['sell','Продати'],['eq','Спорядження']].forEach(a=>tabs.append(btn(a[1],()=>{tab=a[0];render()},tab==a[0]?'on':'')));pb.append(tabs);
   if(tab=='buy')for(const id of STOCK)pb.append(row(id,btn(ITEMS[id].buy+' зол.',()=>buy(id),p.gold<ITEMS[id].buy?'dis':'')));
   else if(tab=='sell'){bagTabs(pb);const ids=bagIds();if(!ids.length)pb.append(el('p','empty','У цій вкладці нічого продавати'));for(const id of ids){const r=row(id,btn('Продати '+ITEMS[id].sell+' зол.',()=>sell(id)));r.querySelector('b').textContent+=' ×'+inv[id];pb.append(r)}}
   else eqView(pb)}
- else{$('pt').textContent='Інвентар';const tb=el('div','tabs');[['bag','Спорядження'],['prof','Професії'],['stats','Статистика']].forEach(a=>tb.append(btn(a[1],()=>{itab=a[0];render()},itab==a[0]?'on':'')));pb.append(tb);if(itab=='stats')statsView(pb);else if(itab=='prof')profView(pb);else eqView(pb)}}
+ else{$('pt').textContent='Інвентар';const tb=el('div','tabs');[['bag','Спорядження'],['prof','Професії'],['quests','Квести'],['stats','Статистика']].forEach(a=>tb.append(btn(a[1],()=>{itab=a[0];render()},itab==a[0]?'on':'')));pb.append(tb);if(itab=='stats')statsView(pb);else if(itab=='quests')questsView(pb);else if(itab=='prof')profView(pb);else eqView(pb)}}
 $('px').onclick=closeUI;ui.addEventListener('pointerdown',e=>{if(e.target===ui)closeUI()});
 $('bag').onclick=()=>uiOpen?closeUI():openUI('inv');pot.onclick=quick;talk.onclick=interact;
 addEventListener('keydown',e=>{if(e.repeat||(e.target&&e.target.tagName=='INPUT'))return;if(e.code=='KeyI'||e.code=='Tab'){e.preventDefault();uiOpen?closeUI():openUI('inv')}else if(e.code=='KeyE'){if(uiOpen)closeUI();else interact()}else if(e.code=='Escape')closeUI();else if(e.code=='KeyQ')quick();else if(/^(Digit|Numpad)[1-4]$/.test(e.code))useSlot(+e.code.slice(-1)-1)});
 // ===== печера кажанів, бос, стрибок на голову =====
 let lvl='world',bossDead=false,worldAct=0,fade=0,msgS='',edgeT=0;
 const TALK={shop:'Торгувати',door:'Увійти в печеру',exit:'Покинути підземелля',portal:'Увійти в портал',chest:'Відкрити скриню',smith:'Кузня',tools:'Магазин інструментів',tailor:'Ательє',carp:'Столярня',mine:'Увійти в шахту',mexit:'Вийти з шахти'},DMG={slime:8,goblin:14,bat:6,boss:18,boar:10};
+
+Object.assign(TALK,{alch:'Алхімік-кухар',lum1:'',q_lum1:'Поговорити: Лісоруб Гнат',q_lum2:'Поговорити: Лісоруб Остап',q_min1:'Поговорити: Шахтар Борис',q_min2:'Поговорити: Шахтар Захар'});
+// ===== імена, квести, алхімік =====
+const EN={slime:'Слиз',goblin:'Гоблін',bat:'Кажан',boss:'Королева кажанів',hare:'Заєць',deer:'Олень',boar:'Кабан'};
+function nameTag(s,x,y,c){g.font='bold 10px system-ui';g.textAlign='center';g.fillStyle='rgba(0,0,0,.65)';g.fillText(s,x+1,y+1);g.fillStyle=c;g.fillText(s,x,y)}
+function drawNames(){for(const e of enemies){if(e.type=='boss')continue;nameTag(EN[e.type]||'',e.x+e.w/2,e.y-(e.type=='bat'?6:20),'#ffb3a8')}for(const a of animals)nameTag(EN[a.type]||'',a.x+a.w/2,a.y-20,(a.type=='boar'&&a.prov>0)?'#ffb3a8':'#d3f0c0')}
+const qdone={};
+const QN={trader:'Торговець Грім',smith:'Коваль Брем',tools:'Майстер Орі',tailor:'Портний Орест',carp:'Столяр Тарас',alch:'Алхімік Мирон',lum1:'Лісоруб Гнат',lum2:'Лісоруб Остап',min1:'Шахтар Борис',min2:'Шахтар Захар'};
+const NPCPOS={trader:{l:'world',x:215,my:160},smith:{l:'world',x:380,my:160},tools:{l:'world',x:530,my:160},tailor:{l:'world',x:690,my:160},carp:{l:'world',x:850,my:160},alch:{l:'world',x:1040,my:160},lum1:{l:'wood',x:2040,my:100},lum2:{l:'wood',x:2160,my:100},min1:{l:'mine',x:760,my:100},min2:{l:'mine',x:1900,my:100}};
+const MODE_NPC={shop:'trader',craft:'smith',tools:'tools',tailor:'tailor',carp:'carp',alch:'alch'};
+const MAINLAB={shop:'Торгівля',craft:'Кузня',tools:'Інструменти',tailor:'Ательє',carp:'Столярня',alch:'Кухня й еліксири'};
+let qtab='main',qnpc=null;
+const QUESTS=[
+ {id:'t1',npc:'trader',t:'Ікла для оберегів',d:'Люди беруть обереги з іклами гоблінів, а мої запаси скінчилися.',need:{fang:5},gold:90,xp:25},
+ {id:'t2',npc:'trader',t:'Слиз для мазі',d:'Лікарі замовили слизові грудки для мазі від опіків.',need:{gel:6},gold:55,xp:15},
+ {id:'t3',npc:'trader',t:'Крила для чаклуна',d:'Один чаклун платить подвійно за крила кажанів.',need:{wing:3},gold:120,xp:40},
+ {id:'t4',npc:'trader',t:'Блиск для вітрини',d:'Покупці люблять дивитися на кристали. Принеси пару.',need:{shard:2},gold:150,xp:45,item:{hp2:1}},
+ {id:'s1',npc:'smith',t:'Дрова для горна',d:'Горн догорає, а дров катма. Принеси колоди.',need:{wood:8},gold:60,xp:20},
+ {id:'s2',npc:'smith',t:'Руда для кузні',d:'Запаси залізної руди на нулі. Без неї зливків не буде.',need:{ore:6},gold:85,xp:25},
+ {id:'s3',npc:'smith',t:'Партія зливків',d:'Для міської варти потрібні готові залізні зливки.',need:{bar:4},gold:160,xp:40},
+ {id:'s4',npc:'smith',t:'Щоденне замовлення',d:'Дрова й руда для поточної роботи. Беру щодня.',need:{wood:4,ore:3},gold:55,xp:12,rep:1},
+ {id:'a1',npc:'tailor',t:'Шкури для замовлення',d:'Пошив шкіряного спорядження не робиться без шкур.',need:{hide:4},gold:85,xp:25},
+ {id:'a2',npc:'tailor',t:'М’яке хутро',d:'Для підкладок і шапок потрібне заяче хутро.',need:{pelt:5},gold:75,xp:20},
+ {id:'a3',npc:'tailor',t:'Плащ для воєводи',d:'Великий замовник хоче плащ з шкури та хутра.',need:{hide:6,pelt:4},gold:190,xp:45},
+ {id:'a4',npc:'tailor',t:'Шкури на кожен день',d:'Беру шкури постійно, ціна чесна.',need:{hide:2},gold:35,xp:8,rep:1},
+ {id:'c1',npc:'carp',t:'Колоди для майстерні',d:'Колоди скінчилися, а замовлень повно.',need:{wood:10},gold:65,xp:20},
+ {id:'c2',npc:'carp',t:'Дошки для мосту',d:'Селяни латають міст. Потрібні готові дошки.',need:{plank:6},gold:105,xp:30},
+ {id:'c3',npc:'carp',t:'Рама для хати',d:'Збираю раму для нового будинку.',need:{plank:10,wood:4},gold:180,xp:45},
+ {id:'c4',npc:'carp',t:'Дрова на розпал',d:'У майстерні холодно, принеси трохи дров.',need:{wood:6},gold:36,xp:8,rep:1},
+ {id:'o1',npc:'tools',t:'Метал для інструментів',d:'Для нових сокир і кирок потрібна руда.',need:{ore:5},gold:80,xp:25},
+ {id:'o2',npc:'tools',t:'Зливки для кирок',d:'Хочу виготовити партію міцних кирок.',need:{bar:2},gold:95,xp:30},
+ {id:'o3',npc:'tools',t:'Шкіра на руків’я',d:'Руків’я без обмотки ковзають у долонях.',need:{hide:2},gold:50,xp:15},
+ {id:'m1',npc:'alch',t:'Трави для відварів',d:'Мої відвари потребують цілющої трави.',need:{herb:8},gold:65,xp:20},
+ {id:'m2',npc:'alch',t:'Яблука для компоту',d:'Хочу зварити компот для всього Затишку.',need:{apple:5},gold:50,xp:15},
+ {id:'m3',npc:'alch',t:'М’ясо для бульйону',d:'Бульйон без м’яса — це просто вода.',need:{meat:3},gold:60,xp:18},
+ {id:'m4',npc:'alch',t:'Кристал для еліксиру',d:'Для еліксиру життя потрібен кристал.',need:{shard:1},gold:100,xp:30,item:{hp2:1}},
+ {id:'m5',npc:'alch',t:'Трава на щодень',d:'Свіжа трава завжди потрібна.',need:{herb:4},gold:30,xp:6,rep:1},
+ {id:'l1',npc:'lum1',t:'Дрова на зиму',d:'Зима близько, а склад порожній. Принеси колоди.',need:{wood:12},gold:95,xp:30},
+ {id:'l2',npc:'lum1',t:'Бурчить у животі',d:'Ми тут рубаємо дрова з ранку, а в животі бурчить. Принеси миску супу!',need:{soup:1},gold:75,xp:30},
+ {id:'l3',npc:'lum1',t:'Дошки для хатини',d:'Дах протікає. Мені потрібні дошки.',need:{plank:4},gold:85,xp:25},
+ {id:'l4',npc:'lum1',t:'Ще дров',d:'Артіль завжди бере зайві колоди.',need:{wood:8},gold:50,xp:10,rep:1},
+ {id:'l5',npc:'lum2',t:'Нові сокири',d:'Старі сокири затупилися. Принеси зливки на заточку.',need:{bar:2},gold:100,xp:30},
+ {id:'l6',npc:'lum2',t:'Дичина на вечерю',d:'Лісоруби без м’яса працювати не будуть.',need:{meat:4},gold:65,xp:20},
+ {id:'l7',npc:'lum2',t:'Гаряча печеня',d:'Хлопці просять печені після важкої зміни.',need:{roast:1},gold:60,xp:20},
+ {id:'l8',npc:'lum2',t:'Колоди для плоту',d:'Дрова потрібні на сплав по річці.',need:{wood:6},gold:40,xp:8,rep:1},
+ {id:'b1',npc:'min1',t:'Руда для вагонеток',d:'Вагонетки порожні, а завод чекає руду.',need:{ore:10},gold:105,xp:30},
+ {id:'b2',npc:'min1',t:'Кристали для ліхтарів',d:'Нам потрібні кристали, щоб освітити нижні штольні.',need:{shard:2},gold:180,xp:50},
+ {id:'b3',npc:'min1',t:'Шахтарський обід',d:'У штольні холодно й голодно. Принеси дві миски супу.',need:{soup:2},gold:135,xp:35},
+ {id:'b4',npc:'min1',t:'Руда на зміну',d:'Щоденна норма руди для бригади.',need:{ore:6},gold:50,xp:10,rep:1},
+ {id:'z1',npc:'min2',t:'Зливки для кріплення',d:'Шахту треба укріпити залізними балками.',need:{bar:3},gold:125,xp:35},
+ {id:'z2',npc:'min2',t:'Блискучі кристали',d:'Кристал у лампі працює краще за вогонь.',need:{shard:1},gold:95,xp:25},
+ {id:'z3',npc:'min2',t:'Печеня для зміни',d:'Шахтарі просять сита печеня.',need:{roast:2},gold:90,xp:25},
+ {id:'z4',npc:'min2',t:'Руда для бригади',d:'Ще один мішок руди не завадить.',need:{ore:5},gold:42,xp:8,rep:1}];
+function curNpc(){return mode=='quest'?qnpc:MODE_NPC[mode]}
+function qHave(q){return Object.keys(q.need).every(k=>(inv[k]||0)>=q.need[k])}
+function qAvail(q){return q.rep||!qdone[q.id]}
+function qNeedTxt(q){return Object.keys(q.need).map(k=>ITEMS[k].n+' '+Math.min(inv[k]||0,q.need[k])+'/'+q.need[k]).join(', ')}
+function qReward(q){let r='+'+q.gold+' зол.';if(q.item)for(const k in q.item)r+=' + '+ITEMS[k].n;return r}
+function qReady(n){return QUESTS.some(q=>q.npc==n&&qAvail(q)&&qHave(q))}
+function turnIn(q){if(!qAvail(q)||!qHave(q)){sfx('no');return}for(const k in q.need)addInv(k,-q.need[k]);p.gold+=q.gold;if(q.item)for(const k in q.item)addInv(k,q.item[k]);qdone[q.id]=(qdone[q.id]|0)+1;sfx('coin');txt(p.x,p.y-40,'Завдання виконано! +'+q.gold+' зол.','#ffd86b');gain(q.xp);saveGame();render()}
+function npcTabs(n){const tb=el('div','tabs');const rd=qReady(n);tb.append(btn(MAINLAB[mode]||'Основне',()=>{qtab='main';render()},qtab=='main'?'on':''),btn('Квести'+(rd?' ❗':''),()=>{qtab='quest';render()},qtab=='quest'?'on':''));return tb}
+function renderQuestPanel(n){$('px').style.display='';$('pt').textContent=QN[n]+' — завдання';$('pg').textContent='Золото: '+p.gold;pb.innerHTML='';
+ if(mode!='quest')pb.append(npcTabs(n));
+ const L=QUESTS.filter(q=>q.npc==n);L.sort((a,b)=>(qAvail(b)&&qHave(b))-(qAvail(a)&&qHave(a))||(qAvail(b)-qAvail(a)));
+ for(const q of L){const av=qAvail(q),ok=av&&qHave(q),r=el('div',av?'row':'row empty');r.append(ic(Object.keys(q.need)[0]));const m=el('div','mid');m.append(el('b',0,q.t+(q.rep?' (повторюване)':'')),el('small',0,q.d),el('small',0,av?'Потрібно: '+qNeedTxt(q)+' · Нагорода: '+qReward(q):'✔ Виконано'));r.append(m);
+  if(av)r.append(btn('Здати',()=>turnIn(q),ok?'':'dis'));pb.append(r)}}
+function questsView(c){const act=QUESTS.filter(q=>qAvail(q)&&Object.keys(q.need).some(k=>(inv[k]||0)>0));act.sort((a,b)=>qHave(b)-qHave(a));
+ c.append(el('h4',0,'Квести, які можна здати або виконуються'));if(!act.length)c.append(el('p','empty','Зараз немає завдань із потрібними предметами. Поговоріть з майстрами в Затишку, лісорубами в Лісозаготівлі й шахтарями в шахті.'));
+ for(const q of act.slice(0,12)){const r=el('div','row');r.append(ic(Object.keys(q.need)[0]));const m=el('div','mid');m.append(el('b',0,q.t+(qHave(q)?' — готово до здачі':'')),el('small',0,QN[q.npc]+' · '+qNeedTxt(q)+' · '+qReward(q)));r.append(m);c.append(r)}
+ c.append(el('p','empty','Усього доступних завдань: '+QUESTS.filter(qAvail).length+' · виконано: '+Object.keys(qdone).length))}
+function nearQ(l){let best=null,bd=80;for(const k in NPCPOS){const o=NPCPOS[k];if(o.l!=l||!/^(lum|min)/.test(k))continue;const d=Math.abs(p.x+11-o.x);if(d<bd&&Math.abs(p.y+40-GY)<45){bd=d;best='q_'+k}}return best}
+function drawQMarks(){const bob=Math.sin(t*4)*3;for(const k in NPCPOS){const o=NPCPOS[k];if(o.l!=lvl)continue;const rd=qReady(k),av=QUESTS.some(q=>q.npc==k&&qAvail(q));if(!av)continue;
+  if(/^(lum|min)/.test(k)){nameTag(QN[k],o.x,GY-72,'#ffe9a8')}
+  g.font='bold 22px system-ui';g.textAlign='center';g.lineWidth=3;g.strokeStyle='rgba(0,0,0,.7)';const y=GY-o.my-14+bob,tx=rd?'?':'!';g.strokeText(tx,o.x+(k=='trader'?0:0),y);g.fillStyle=rd?'#ffd23a':'#cfd6e6';g.fillText(tx,o.x,y)}}
+function drawAlch(){if(lvl!='world')return;const x=ALCH.x,y=GY,b=Math.sin(t*2+2)*1.5;
+ g.fillStyle='#e8e2d0';g.fillRect(x-10,y-68+b,20,36);g.fillStyle='#3a8a5a';g.fillRect(x-8,y-60+b,16,26);
+ g.fillStyle='#f1c9a0';g.beginPath();g.arc(x,y-76+b,8,0,6.3);g.fill();g.fillStyle='#222';g.fillRect(x-4,y-78+b,2,2);g.fillRect(x+2,y-78+b,2,2);
+ g.fillStyle='#fff';g.fillRect(x-8,y-92+b,16,10);g.beginPath();g.ellipse(x,y-92+b,11,5,0,0,6.3);g.fill();
+ g.fillStyle='#5a3a1e';g.fillRect(x-46,y-30,92,30);g.fillStyle='#7a5530';g.fillRect(x-50,y-34,100,6);
+ drawIcon(g,'hp1',x-33,y-42,1.2);drawIcon(g,'hp2',x-11,y-42,1.2);drawIcon(g,'soup',x+11,y-42,1.2);drawIcon(g,'roast',x+33,y-42,1.2);
+ g.fillStyle='rgba(255,255,255,'+(.25+.1*Math.sin(t*3))+')';g.beginPath();g.arc(x+30+Math.sin(t*2)*4,y-56-((t*20)%20),3,0,6.3);g.fill();
+ for(let i=0;i<8;i++){g.fillStyle=i%2?'#e8e2d0':'#2f8f5a';g.fillRect(x-52+i*13,y-120,13,22)}
+ g.fillStyle='#6b4a2a';g.fillRect(x-53,y-120,3,120);g.fillRect(x+50,y-120,3,120);
+ g.fillStyle='#fff';g.font='bold 11px system-ui';g.textAlign='center';g.fillText('АЛХІМІК-КУХАР',x,y-126);
+ if(near=='alch'){g.fillStyle='#ffd86b';g.font='bold 13px system-ui';g.fillText('Кухня (E)',x,y-140+Math.sin(t*5)*2)}}
 const CAVE={LW:3500,
  plats:[[-80,GY,1380,80],[1440,GY,2060,80],[300,380,120,16],[520,320,120,16],[780,380,100,16],[1020,360,140,16],[1230,300,120,16],[1330,400,80,16],[1700,GY-60,50,60,'s'],[2500,360,120,16],[2750,300,140,16],[3000,360,120,16],[3250,320,120,16],[-80,60,80,400,'s'],[3500,60,80,400,'s']].map(a=>({x:a[0],y:a[1],w:a[2],h:a[3],k:a[4]})),
  camps:[],
@@ -381,8 +468,8 @@ function loadLevel(n){const from=lvl;if(from=='world')worldAct=act;lvl=n;const L
  ecamps.forEach(c=>{if(c.type=='boss'&&bossDead)return;spawn(c)});
  act=n=='world'?worldAct:(L.act||0);p.x=n=='world'?({cave:4215,wood:46,mine:MINEX-11}[from]||120):(L.sx||110);p.face=n=='wood'?-1:1;edgeT=0;p.y=GY-p.h;p.vx=p.vy=0;p.inv=1;cam=p.x+11-W/2;camY=180;fade=1;if(n=='cave'){run=newRun();conts=mkConts();portal=null;bossDead=false;msgT=5;msgS='Підземелля: без таборів. Смерть — повернення на вхід'}else{conts=[];portal=null;if(LOCN[n]){msgT=3;msgS=LOCN[n]}}nodes=mkNodes(n);mkAnimals(n)}
 function nearWhat(){if(p.dead)return 0;if(nearNode())return 'node';const at=a=>Math.abs(p.x+11-a)<80&&Math.abs(p.y+40-GY)<45;
- if(lvl=='world'){if(Math.abs(p.x+11-NPC.x)<80&&Math.abs(p.y+40-NPC.y)<40)return 'shop';if(at(SMITH.x))return 'smith';if(at(TOOLS.x))return 'tools';if(at(TAILOR.x))return 'tailor';if(at(CARP.x))return 'carp';if(at(4260))return 'door';if(at(MINEX))return 'mine'}else if(lvl=='mine'){if(at(50))return 'mexit'}else{if(portal&&at(portal.x))return 'portal';for(const c of conts)if(c.k=='chest'&&!c.open&&Math.abs(p.x+11-c.x)<50&&Math.abs(p.y+40-c.y)<50)return 'chest';if(at(50))return 'exit'}return 0}
-function interact(){if(near=='shop')openUI('shop');else if(near=='door'){sfx('door');loadLevel('cave')}else if(near=='exit'){if(exitArm>0)finishRun(false);else{exitArm=3;txt(p.x,p.y-30,'Натисніть ще раз, щоб покинути','#f88')}}else if(near=='portal')finishRun(true);else if(near=='chest')openChest();else if(near=='smith')openUI('craft');else if(near=='tools')openUI('tools');else if(near=='tailor')openUI('tailor');else if(near=='carp')openUI('carp');else if(near=='mine'){sfx('door');loadLevel('mine')}else if(near=='mexit'){sfx('door');loadLevel('world')}else if(near=='node')gather2()}
+ if(lvl=='world'){if(Math.abs(p.x+11-NPC.x)<80&&Math.abs(p.y+40-NPC.y)<40)return 'shop';if(at(SMITH.x))return 'smith';if(at(TOOLS.x))return 'tools';if(at(TAILOR.x))return 'tailor';if(at(CARP.x))return 'carp';if(at(ALCH.x))return 'alch';if(at(4260))return 'door';if(at(MINEX))return 'mine'}else if(lvl=='mine'){if(at(50))return 'mexit';const q=nearQ('mine');if(q)return q}else{if(lvl=='wood'){const q=nearQ('wood');if(q)return q}if(portal&&at(portal.x))return 'portal';for(const c of conts)if(c.k=='chest'&&!c.open&&Math.abs(p.x+11-c.x)<50&&Math.abs(p.y+40-c.y)<50)return 'chest';if(at(50))return 'exit'}return 0}
+function interact(){if(near=='shop')openUI('shop');else if(near=='door'){sfx('door');loadLevel('cave')}else if(near=='exit'){if(exitArm>0)finishRun(false);else{exitArm=3;txt(p.x,p.y-30,'Натисніть ще раз, щоб покинути','#f88')}}else if(near=='portal')finishRun(true);else if(near=='chest')openChest();else if(near=='smith')openUI('craft');else if(near=='tools')openUI('tools');else if(near=='tailor')openUI('tailor');else if(near=='carp')openUI('carp');else if(near=='mine'){sfx('door');loadLevel('mine')}else if(near=='mexit'){sfx('door');loadLevel('world')}else if(near=='alch')openUI('alch');else if(String(near).startsWith('q_')){qnpc=near.slice(2);openUI('quest')}else if(near=='node')gather2()}
 function kill(e){if(e.animal){killAnimal(e);return}sfx(e.type=='boss'?'bossdie':'kill',e.x,e.type);e.camp.e=null;e.camp.t=(e.camp.once||lvl=='cave')?0:RESP;const big=e.type=='boss';
  burst(e.x+e.w/2,e.y+e.h/2,{goblin:'#7a3',slime:'#5c6',bat:'#85a',boss:'#b6f'}[e.type],big?60:22,big?320:200);
  gain({goblin:35,slime:20,bat:15,boss:300}[e.type]);drops(e);enemies=enemies.filter(z=>z!==e);
@@ -533,12 +620,13 @@ const NK={tree:{tool:'axe',prof:'wood',out:'wood',n:2,xp:4,sfx:'chop',dust:'#8a5
 const NODELAB={tree:'Рубати дерево',ore:'Копати руду',herb:'Збирати траву',apple:'Зібрати яблука',carcass:'Зняти шкуру'};
 const TOOLSHOP=['axe1','pick1','sickle1','knife1'];
 const RECIPES=[{out:'bar',n:1,need:{ore:2,wood:1}},{out:'w4',n:1,need:{bar:3,wood:2}},{out:'h3',n:1,need:{bar:3,wood:1}},{out:'b4',n:1,need:{bar:5,fang:2}},{out:'f3',n:1,need:{bar:2,fang:2}},
- {out:'axe2',n:1,need:{bar:2,wood:2,axe1:1}},{out:'pick2',n:1,need:{bar:3,wood:2,pick1:1}},{out:'sickle2',n:1,need:{bar:2,wood:1,sickle1:1}},{out:'hp1',n:2,need:{herb:2}},{out:'hp2',n:1,need:{herb:3,shard:1}},{out:'knife2',n:1,need:{bar:2,wood:1,knife1:1}},{out:'roast',n:1,need:{meat:2}}];
+ {out:'axe2',n:1,need:{bar:2,wood:2,axe1:1}},{out:'pick2',n:1,need:{bar:3,wood:2,pick1:1}},{out:'sickle2',n:1,need:{bar:2,wood:1,sickle1:1}},{out:'knife2',n:1,need:{bar:2,wood:1,knife1:1}}];
+const RECIPES_A=[{out:'hp1',n:2,need:{herb:2}},{out:'hp2',n:1,need:{herb:3,shard:1}},{out:'hp3',n:1,need:{herb:6,shard:2}},{out:'roast',n:1,need:{meat:2}},{out:'soup',n:1,need:{meat:1,herb:2}},{out:'compote',n:2,need:{apple:3}}];
 const RECIPES_T=[{out:'h1',n:1,need:{hide:2}},{out:'b1',n:1,need:{hide:4}},{out:'f1',n:1,need:{hide:3}},{out:'h4',n:1,need:{pelt:4,hide:1}},{out:'f4',n:1,need:{pelt:3,hide:2}},{out:'b5',n:1,need:{pelt:6,hide:3}}];
 const RECIPES_C=[{out:'plank',n:2,need:{wood:1}},{out:'w5',n:1,need:{plank:3}},{out:'h5',n:1,need:{plank:4}},{out:'f5',n:1,need:{plank:3}},{out:'b6',n:1,need:{plank:8}}];
 function toolTier(t){return inv[t+'2']>0?2:inv[t+'1']>0?1:0}
 function mkNodes(l){const o=[],A=(k,xs,hp,rg)=>xs.forEach(x=>o.push({k:k,x:x,y:GY,hp:hp,max:hp,dead:false,t:0,regrow:rg,shake:0}));
- if(l=='world'){A('apple',[125,292,990],1,40);A('tree',[1210,2540,3480,3820],3,60);A('ore',[1190,3720],3,90);A('herb',[1040,1380,2280,2480,3140,3600],1,45)}
+ if(l=='world'){A('apple',[125,292,1150],1,40);A('tree',[1210,2540,3480,3820],3,60);A('ore',[1190,3720],3,90);A('herb',[1105,1380,2280,2480,3140,3600],1,45)}
  else if(l=='wood'){A('tree',[260,430,590,740,900,1060,1200,1340,1480,2260,2380,2500,2640,2780,2920,3060],3,60);A('apple',[170,1130,2830],1,40);A('herb',[350,820,1270,2330,2700],1,45)}
  else if(l=='mine'){A('ore',[420,640,900,1120,1360,1580,1800,2040,2250,2450],3,75)}
  else if(l=='cave')A('ore',[420,700,1500,1900,2250],3,0);
@@ -552,14 +640,14 @@ function gather(){const n=nearNode();if(!n||gcd>0)return;const d=NK[n.k];
  const lv=prof[d.prof].lv;let amt=d.n+(tt>1&&d.tool?1:0)+(Math.random()<(lv-1)*.08?1:0);lp(n.x,n.y-30,d.out,amt);
  if(n.k=='ore'&&Math.random()<(DK()?.25:.08))lp(n.x,n.y-30,'shard');
  profXp(d.prof,d.xp)}
-function craft(r){if(!Object.keys(r.need).every(k=>(inv[k]||0)>=r.need[k])){sfx('no');return}for(const k in r.need)addInv(k,-r.need[k]);addInv(r.out,r.n);sfx('anvil');txt(p.x,p.y-30,'Виковано: '+ITEMS[r.out].n,'#ffd86b');render()}
+function craft(r){if(!Object.keys(r.need).every(k=>(inv[k]||0)>=r.need[k])){sfx('no');return}for(const k in r.need)addInv(k,-r.need[k]);addInv(r.out,r.n);const al=mode=='alch';sfx(al?'potion':'anvil');txt(p.x,p.y-30,(al?'Приготовано: ':'Виковано: ')+ITEMS[r.out].n,'#ffd86b');render()}
 function renderCraft(){$('pg').textContent='Золото: '+p.gold;pb.innerHTML='';
  if(mode=='tools'){$('pt').textContent='Майстер Орі — інструменти';
   TOOLSHOP.forEach(id=>{const it=ITEMS[id],own=toolTier(it.tool)>=it.tier;pb.append(row(id,own?el('small',0,'Є'):btn(it.buy+' зол.',()=>buy(id),p.gold<it.buy?'dis':'')))});
   pb.append(el('p','empty','Сокира — дерево, кирка — руда, серп — трава. Залізні версії виковує коваль.'));return}
- const ST={craft:['Коваль Брем — кузня',RECIPES],tailor:['Портний Орест — ательє',RECIPES_T],carp:['Столяр Тарас — столярня',RECIPES_C]}[mode];$('pt').textContent=ST[0];
+ const ST={craft:['Коваль Брем — кузня',RECIPES],tailor:['Портний Орест — ательє',RECIPES_T],carp:['Столяр Тарас — столярня',RECIPES_C],alch:['Алхімік-кухар Мирон — кухня',RECIPES_A]}[mode];$('pt').textContent=ST[0];
  if(mode=='craft')for(const id of Object.keys(inv)){const it=ITEMS[id];if(!it||it.t!='tool')continue;const mx=MAXD[it.tier],dd=durOf(id);if(dd>=mx)continue;const cost=Math.ceil((mx-dd)*(it.tier>1?1.5:.8)),rw0=row(id,btn('Ремонт '+cost+' зол.',()=>{if(p.gold<cost){sfx('no');return}p.gold-=cost;tdur[id]=mx;sfx('anvil');render()},p.gold<cost?'dis':''));rw0.querySelector('b').textContent='Ремонт: '+it.n;rw0.querySelector('small').textContent='Міцність '+dd+'/'+mx;pb.append(rw0)}
- ST[1].forEach(r=>{const ok=Object.keys(r.need).every(k=>(inv[k]||0)>=r.need[k]),need=Object.keys(r.need).map(k=>ITEMS[k].n+' '+Math.min(inv[k]||0,r.need[k])+'/'+r.need[k]).join(', '),rw=row(r.out,btn('Виковати',()=>craft(r),ok?'':'dis'));
+ ST[1].forEach(r=>{const ok=Object.keys(r.need).every(k=>(inv[k]||0)>=r.need[k]),need=Object.keys(r.need).map(k=>ITEMS[k].n+' '+Math.min(inv[k]||0,r.need[k])+'/'+r.need[k]).join(', '),rw=row(r.out,btn(mode=='alch'?'Приготувати':'Виковати',()=>craft(r),ok?'':'dis'));
   rw.querySelector('small').textContent=need;if(r.n>1)rw.querySelector('b').textContent+=' ×'+r.n;pb.append(rw)})}
 function profView(c){c.append(el('h4',0,'Гравець: '+(pname||'—')));
  c.append(table(['wood','mine','herb','skin'].map(k=>{const pr=prof[k],tt=toolTier(PTOOL[k]);return [PNAME[k]+' (рів. '+pr.lv+')','досвід '+pr.xp+'/'+pr.lv*12+' · '+TOOLN[PTOOL[k]]+': '+(tt==2?'залізна':tt==1?'звичайна':'немає')+' · +'+(pr.lv-1)*8+'% шанс подвійного видобутку']})))}
@@ -569,7 +657,7 @@ function renderName(){$('pt').textContent=pname?'Змінити ім’я':'Ла
  pb.append(inp,btn('Почати гру',ok,'go'));setTimeout(()=>{try{inp.focus()}catch(e){}},60)}
 function setName(v){v=String(v).replace(/\s+/g,' ').trim().slice(0,16);if(!v){sfx('no');return}const first=!pname;pname=v;saveGame();closeUI();txt(p.x,p.y-60,(first?'Вітаємо, ':'Ім’я: ')+pname+'!','#ffd86b')}
 function drawTag(){if(p.dead||!pname)return;g.font='bold 10px system-ui';g.textAlign='center';g.fillStyle='rgba(0,0,0,.55)';g.fillText(pname,p.x+12,p.y-22);g.fillStyle='#fff';g.fillText(pname,p.x+11,p.y-23)}
-function drawNodes(){for(const n of nodes){if(n.k=='carcass'){drawAnimal({x:n.x-n.aw/2,y:n.y-n.ah,w:n.aw,h:n.ah,type:n.a,vx:0,ph:0,sq:0,hurt:0,dir:1,stun:0},true);continue}const ox=n.shake>0?Math.sin(n.shake*60)*2:0,dead=n.dead,cv=DK();g.save();g.translate(n.x+ox,n.y);
+function drawNodes(){for(const n of nodes){if(n.k=='carcass'){g.save();if(n.ttl<8)g.globalAlpha=Math.max(.15,.55+.45*Math.sin(n.ttl*10));drawAnimal({x:n.x-n.aw/2,y:n.y-n.ah,w:n.aw,h:n.ah,type:n.a,vx:0,ph:0,sq:0,hurt:0,dir:1,stun:0},true);g.restore();continue}const ox=n.shake>0?Math.sin(n.shake*60)*2:0,dead=n.dead,cv=DK();g.save();g.translate(n.x+ox,n.y);
  if(n.k=='tree'||n.k=='apple'){if(dead){g.fillStyle='#6b4a2a';g.fillRect(-8,-9,16,9);g.fillStyle='#a07a48';g.fillRect(-8,-9,16,3)}else{g.fillStyle='#6b4a2a';g.fillRect(-6,-46,12,46);const ap=n.k=='apple';g.fillStyle=ap?'#3f8f3f':'#2f7a3a';g.beginPath();g.arc(0,-62,32,0,6.3);g.arc(-22,-48,22,0,6.3);g.arc(22,-48,22,0,6.3);g.fill();g.fillStyle=ap?'#4fae4f':'#3f9a4a';g.beginPath();g.arc(-8,-70,16,0,6.3);g.fill();
    if(ap){g.fillStyle='#e03a3a';for(const a of [[-18,-58],[10,-72],[22,-50],[-4,-48],[-26,-44]]){g.beginPath();g.arc(a[0],a[1],4,0,6.3);g.fill()}}}}
  else if(n.k=='ore'){g.fillStyle=dead?'#40404a':cv?'#4a3d70':'#7b7f8c';g.beginPath();if(dead){g.moveTo(-14,0);g.lineTo(-8,-8);g.lineTo(2,-4);g.lineTo(12,0)}else{g.moveTo(-20,0);g.lineTo(-16,-20);g.lineTo(-4,-32);g.lineTo(12,-26);g.lineTo(20,-8);g.lineTo(22,0)}g.fill();
@@ -644,10 +732,10 @@ function updAnimals(dt){for(const c of acamps)if(!c.a&&c.t>0){c.t-=dt;if(c.t<=0)
  nodes=nodes.filter(n=>!(n.k=='carcass'&&(n.dead||(n.ttl-=dt)<=0)))}
 function hitAnimals(hb){for(const a of animals.slice()){if(a.hp>0&&ov(hb,a)){const d=dmgOf();a.hp-=d;lifesteal(d);a.hurt=.3;a.vx=p.face*240;a.vy=-200;a.prov=6;sfx('hit',a.x,a.type);burst(a.x+a.w/2,a.y+a.h/2,'#fff',6,140);txt(a.x,a.y-8,'-'+d,'#fff');if(a.hp<=0)killAnimal(a)}}}
 function killAnimal(a){animals=animals.filter(z=>z!==a);const c=a.camp;if(c){c.a=null;c.t=70}burst(a.x+a.w/2,a.y+a.h/2,'#a33',14,160);sfx('kill',a.x,'goblin');gain(AD[a.type].xp);lp(a.x+a.w/2,a.y,'gold',1+(Math.random()*3|0));
- nodes.push({k:'carcass',a:a.type,x:a.x+a.w/2,y:a.y+a.h,aw:a.w,ah:a.h,hp:2,max:2,dead:false,t:0,regrow:0,shake:0,ttl:70})}
+ nodes.push({k:'carcass',a:a.type,x:a.x+a.w/2,y:a.y+a.h,aw:a.w,ah:a.h,hp:2,max:2,dead:false,t:0,regrow:0,shake:0,ttl:60})}
 function drawAnimals(){for(const a of animals)drawAnimal(a,false)}
 function drawAnimal(a,flat){const cx=a.x+a.w/2,by=a.y+a.h,T=a.type,fl=a.hurt>0,sp=Math.abs(a.vx)>10?Math.sin(a.ph*(Math.abs(a.vx)>60?16:7))*3:0;
- g.save();g.translate(cx,by);if(flat){g.translate(-a.h/2,-a.w/2);g.rotate(Math.PI/2)}else{const q=a.sq||0;g.scale(a.dir*(1+.15*q),1-.3*q)}
+ g.save();g.translate(cx,by);if(flat){const ex=T=='deer'?28:T=='boar'?25:14;g.beginPath();g.rect(-80,-ex-1,160,ex+1);g.clip();g.translate(0,-ex);g.scale(1,-1)}else{const q=a.sq||0;g.scale(a.dir*(1+.15*q),1-.3*q)}
  if(T=='hare'){g.fillStyle=fl?'#fff':'#b89a72';g.fillRect(-5+sp*.5,-4,2.5,4);g.fillRect(3-sp*.5,-4,2.5,4);g.beginPath();g.ellipse(0,-8,9,6,0,0,6.3);g.fill();g.beginPath();g.arc(8,-11,4.2,0,6.3);g.fill();g.fillRect(5,-22,2.5,10);g.fillRect(8.5,-21,2.5,9);g.fillStyle='#fff';g.beginPath();g.arc(-9,-9,3,0,6.3);g.fill();g.fillStyle='#222';g.fillRect(9,-12,1.5,1.5)}
  else if(T=='deer'){g.fillStyle='#6a4a2a';g.fillRect(-14+sp,-16,3,16);g.fillRect(-7-sp,-16,3,16);g.fillRect(7+sp,-16,3,16);g.fillRect(13-sp,-16,3,16);g.fillStyle=fl?'#fff':'#9a6a3a';g.beginPath();g.ellipse(0,-20,17,8,0,0,6.3);g.fill();g.beginPath();g.moveTo(10,-24);g.lineTo(16,-36);g.lineTo(22,-34);g.lineTo(14,-20);g.fill();g.beginPath();g.ellipse(19,-36,6,4,-.3,0,6.3);g.fill();g.fillStyle='#fff';g.beginPath();g.arc(-17,-22,3,0,6.3);g.fill();g.fillStyle='#222';g.fillRect(21,-38,1.5,1.5);
   g.strokeStyle='#d9c8a0';g.lineWidth=2;g.beginPath();g.moveTo(17,-39);g.lineTo(15,-50);g.lineTo(10,-54);g.moveTo(15,-50);g.lineTo(18,-56);g.moveTo(21,-39);g.lineTo(24,-50);g.lineTo(29,-53);g.moveTo(24,-50);g.lineTo(22,-57);g.stroke()}
@@ -698,11 +786,12 @@ function drawCarp(){if(lvl!='world')return;const x=CARP.x,y=GY,sw=Math.sin(t*7);
  g.fillStyle='#fff';g.font='bold 11px system-ui';g.textAlign='center';g.fillText('СТОЛЯР',x,y-126);
  if(near=='carp'){g.fillStyle='#ffd86b';g.font='bold 13px system-ui';g.fillText('Столярня (E)',x,y-140+Math.sin(t*5)*2)}}
 let saveT=5,resetArm=0;
-function saveGame(){try{localStorage.setItem('rpgSave1',JSON.stringify({v:1,name:pname,prof:prof,tdur:tdur,lvl:p.lvl,xp:p.xp,max:p.max,hp:Math.max(1,Math.round(p.hp)),gold:p.gold,inv:inv,equip:equip,slots:slots,act:lvl=='world'?act:worldAct,t:Date.now()}))}catch(e){}}
+function saveGame(){try{localStorage.setItem('rpgSave1',JSON.stringify({v:1,name:pname,prof:prof,tdur:tdur,lvl:p.lvl,xp:p.xp,max:p.max,hp:Math.max(1,Math.round(p.hp)),gold:p.gold,inv:inv,equip:equip,slots:slots,q:qdone,act:lvl=='world'?act:worldAct,t:Date.now()}))}catch(e){}}
 function loadGame(){try{const s=JSON.parse(localStorage.getItem('rpgSave1')||'null');if(!s||s.v!==1)return;
  p.lvl=(s.lvl|0)||1;if(typeof s.name=='string')pname=s.name.slice(0,16);if(s.prof)for(const k in prof)if(s.prof[k])prof[k]={lv:(s.prof[k].lv|0)||1,xp:s.prof[k].xp|0};if(s.tdur)for(const k in s.tdur)if(ITEMS[k]&&ITEMS[k].t=='tool')tdur[k]=Math.max(1,Math.min(MAXD[ITEMS[k].tier],s.tdur[k]|0));p.xp=s.xp|0;p.max=(s.max|0)||100;p.gold=s.gold|0;p.hp=Math.min(p.max,Math.max(1,s.hp|0));
  for(const k in inv)delete inv[k];for(const k in (s.inv||{}))if(ITEMS[k]&&s.inv[k]>0)inv[k]=s.inv[k]|0;
  for(const k of ['w','h','b','f'])equip[k]=(s.equip&&ITEMS[s.equip[k]]&&ITEMS[s.equip[k]].t==k)?s.equip[k]:null;
+if(s.q&&typeof s.q=='object')for(const k in s.q)if(QUESTS.some(z=>z.id==k))qdone[k]=s.q[k]|0;
  for(let i=0;i<4;i++){const q=s.slots&&s.slots[i];slots[i]=(q&&usable(q)&&slots.indexOf(q)<0)?q:null}for(const k in inv)autoSlot(k);
  act=Math.min(camps.length-1,Math.max(0,s.act|0));const c=camps[act];p.x=c.x+30;p.y=GY-p.h;cam=p.x+11-W/2}catch(e){}}
 function resetBtn(c){const b=el('div','tabs'),rb=btn('Скинути прогрес',()=>{if(resetArm>Date.now()){try{localStorage.removeItem('rpgSave1');localStorage.removeItem('rpgRuns')}catch(e){}location.reload()}else{resetArm=Date.now()+3000;rb.textContent='Точно? Натисніть ще раз'}});b.append(rb,btn('Змінити ім’я',()=>openUI('name')));c.append(b)}
